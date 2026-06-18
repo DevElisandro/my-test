@@ -29,11 +29,7 @@ export default function SignupPage() {
               : "bg-danger/10 border border-danger/25 text-danger"
           }`}
         >
-          {state.message.startsWith("Cuenta creada") ? (
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ) : (
+          {state.message.startsWith("Cuenta creada") && (
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
@@ -53,16 +49,14 @@ export default function SignupPage() {
           </label>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
-              </svg>
+              @
             </span>
             <input
               id="email"
               name="email"
               type="email"
               placeholder="nombre@ejemplo.com"
-              className="input-field w-full pl-10 pr-4 py-3 rounded-xl text-sm"
+              className="input-field w-full pl-10 pr-4 py-3 rounded-lg text-sm"
               autoComplete="email"
               required
             />
@@ -93,7 +87,7 @@ export default function SignupPage() {
               name="password"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className="input-field w-full pl-10 pr-10 py-3 rounded-xl text-sm"
+              className="input-field w-full pl-10 pr-10 py-3 rounded-lg text-sm"
               autoComplete="new-password"
               required
             />
@@ -144,7 +138,7 @@ export default function SignupPage() {
               name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
-              className="input-field w-full pl-10 pr-10 py-3 rounded-xl text-sm"
+              className="input-field w-full pl-10 pr-10 py-3 rounded-lg text-sm"
               autoComplete="new-password"
               required
             />
