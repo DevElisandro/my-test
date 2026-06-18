@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="glass-card rounded-2xl p-8 relative overflow-hidden animate-fade-in shadow-2xl border border-white/10">
+    <div className="glass-card rounded-lg p-8 relative overflow-hidden animate-fade-in shadow-2xl border border-white/10">
       {/* Header */}
       <div className="text-center mb-8 animate-fade-in-delay-1">
         <h1 className="text-2xl font-bold text-white tracking-tight">Bienvenido de nuevo</h1>
