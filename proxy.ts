@@ -6,7 +6,7 @@ const protectedRoutes = ['/dashboard']
 const publicRoutes = ['/login', '/signup']
 
 export async function proxy(request: NextRequest) {
-  // Crear un response base para poder modificar cookies
+  // Se crea un response base para poder modificar cookies
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Refrescar la sesión del usuario (importante para mantener la sesión activa)
+  // Es importante para mantener la sesión activa
   const {
     data: { user },
   } = await supabase.auth.getUser()
