@@ -2,89 +2,58 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/app/lib/supabase/server'
-import {
-  LoginFormSchema,
-  SignupFormSchema,
-  type LoginFormState,
-  type SignupFormState,
-} from '@/app/lib/definitions'
+import { LoginFormSchema, SignupFormSchema, type LoginFormState, type SignupFormState } from '@/app/lib/definitions'
 
-export async function login(
-  state: LoginFormState,
-  formData: FormData
-): Promise<LoginFormState> {
-  // 1. Validar campos del formulario
-  const validatedFields = LoginFormSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  })
+export async function login(state: LoginFormState, formData: FormData): Promise<LoginFormState> {
+  // Validamos los datos con Zod
+  const data = Object.fromEntries(formData)
+  const result = LoginFormSchema.safeParse(data)
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors }
   }
 
-  // 2. Intentar iniciar sesión con Supabase
+  // Iniciamos sesión con el cliente de Supabase
   const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword({
-    email: validatedFields.data.email,
-    password: validatedFields.data.password,
-  })
+  const { error } = await supabase.auth.signInWithPassword(result.data)
 
   if (error) {
-    return {
-      message: 'Email o contraseña incorrectos.',
-    }
+    return { message: 'Email o contraseña incorrectos.' }
   }
 
-  // 3. Redirigir al dashboard
   redirect('/dashboard')
 }
 
-export async function signup(
-  state: SignupFormState,
-  formData: FormData
-): Promise<SignupFormState> {
-  // 1. Validar campos del formulario
-  const validatedFields = SignupFormSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
-  })
+export async function signup(state: SignupFormState, formData: FormData): Promise<SignupFormState> {
+  // Validamos los datos con Zod
+  const data = Object.fromEntries(formData)
+  const result = SignupFormSchema.safeParse(data)
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors }
   }
 
-  // 2. Crear cuenta con Supabase
+  // Se registra el usuario en Supabase
   const supabase = await createClient()
-  const { data, error } = await supabase.auth.signUp({
-    email: validatedFields.data.email,
-    password: validatedFields.data.password,
+  const { data: userData, error } = await supabase.auth.signUp({
+    email: result.data.email,
+    password: result.data.password,
   })
 
   if (error) {
-    return {
-      message: error.message,
-    }
+    return { message: error.message }
   }
 
-  // 3. Si no hay sesión, la confirmación por email está activada
-  if (!data.session) {
-    return {
-      message:
-        'Cuenta creada. Revisa tu email para confirmar tu cuenta antes de iniciar sesión.',
-    }
+  // Si no inicia sesión de forma automática, requiere confirmar correo
+  if (!userData.session) {
+    return { message: 'Cuenta creada. Revisa tu email para confirmar tu cuenta.' }
   }
 
-  // 4. Si hay sesión, redirigir al dashboard
   redirect('/dashboard')
 }
 
 export async function logout() {
+  // Cerramos sesión y mandamos al login
   const supabase = await createClient()
   await supabase.auth.signOut()
   redirect('/login')
